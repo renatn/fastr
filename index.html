@@ -26,47 +26,63 @@
 	</style>
 	<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.0/jquery.js"></script>
 	<script type="text/javascript">
-
-	function wait(ms) {
-		var deferred = $.Deferred();
-		setTimeout(function(){deferred.resolve()}, ms);
-		return deferred.promise();
-	}
-
-	function render(left, center, right) {
-		var e = left.replace(/\s/g, '&nbsp;') + "<span class='red'>"+center+"</span>"+right;
-		$(".word").html(e);
-	}
-
-	function iter (text, ms) {
-		if (text.length == 0) {
-			$("#btn-start").removeAttr("disabled");
-			return;
-		}
-		var word = text.splice(0,1)[0].trim();
-
-		var delay = 0;
-		if (word.length < 3 || word.length > 8) {
-			delay = 100;
+		function wait(ms) {
+			var deferred = $.Deferred();
+			setTimeout(function(){deferred.resolve()}, ms);
+			return deferred.promise();
 		}
 
-		while (word.length < 3) {
-			word = " " + word;
+		function render(left, center, right) {
+			var e = left.replace(/\s/g, '&nbsp;') + "<span class='red'>"+center+"</span>"+right;
+			$(".word").html(e);
 		}
-		
-		render(word.substr(0,2), word[2], word.substr(3));
-		wait(ms+delay).done(function(){iter(text, ms)});
-	}
 
-	$(document).ready(function() {	
-		$("#btn-start").click(function() {
+		function iter (words, i, ms) {
 
-			$(this).attr("disabled", "disabled");
+			if (words.length <= i) {
+				$("#btn-start").removeAttr("disabled");
+				return;
+			}
 
-			var text = 'QuickSort является существенно улучшенным вариантом алгоритма сортировки с помощью прямого обмена (его варианты известны как «Пузырьковая сортировка» и «Шейкерная сортировка»), известного, в том числе, своей низкой эффективностью. Принципиальное отличие состоит в том, что в первую очередь производятся перестановки на наибольшем возможном расстоянии и после каждого прохода элементы делятся на две независимые группы. Любопытный факт: улучшение самого неэффективного прямого метода сортировки дало в результате один из наиболее эффективных улучшенных методов. Общая идея алгоритма состоит в следующем: Выбрать из массива элемент, называемый опорным. Это может быть любой из элементов массива. Сравнить все остальные элементы с опорным и переставить их в массиве так, чтобы разбить массив на три непрерывных отрезка, следующие друг за другом — «меньшие опорного», «равные» и «большие». [1] Для отрезков «меньших» и «больших» значений выполнить рекурсивно ту же последовательность операций, если длина отрезка больше единицы. На практике массив обычно делят не на три, а на две части, например, «меньшие опорного» и «равные и большие». Такой подход в общем случае эффективнее, так как упрощает алгоритм разделения (см. ниже). Хоар разработал этот метод применительно к машинному переводу; словарь хранился на магнитной ленте, и сортировка слов обрабатываемого текста позволяла получить их переводы за один прогон ленты, без перемотки её назад. Алгоритм был придуман Хоаром во время его пребывания в Советском Союзе, где он обучался в Московском университете компьютерному переводу и занимался разработкой русско-английского разговорника.'.trim().split(" ");
-			$(".word").fadeOut(500, function(){$(this).empty()}).fadeIn(function(){iter(text, 250)});
+			var word = words[i];
+
+			var delay = 0;
+			if (word.length > 8) {
+				delay = 100;
+			}
+
+			render(word.substr(0,2), word[2], word.substr(3));
+			wait(ms+delay).done(function(){iter(words, i+1, ms)});
+
+		}
+
+		function normalizeWord(word) {
+			word = word.trim();
+			while (word.length < 3) {
+				word = " " + word;
+			} 
+			return word;
+		}
+
+		$(document).ready(function() {	
+			$("#btn-start").click(function() {
+				var url = $("#articleUrl").val();
+				if (url.length == 0) {
+					return;
+				}
+
+				$(this).attr("disabled", "disabled");
+
+				$.getJSON("https://www.readability.com/api/content/v1/parser?url="+ url +"&token=74e9c9a322e162f0dee87e8425ce209eeea0643e&callback=?", function (data) {
+					var text = data.title + " " + $('<div />').html(data.content).text();					
+					var words = text.split(/[ \n]+/)
+									.filter(function(word){return word.trim().length > 0})
+									.map(normalizeWord);
+
+					$(".word").fadeOut(500, function(){$(this).empty()}).fadeIn(function(){iter(words, 0, 250)});
+	        	});
+			});
 		});
-	});
 	</script>
 </head>
 <body>
@@ -78,7 +94,7 @@
 	</div>
 	<div style="text-align:center">
 		<form action="javascript:void(0);">
-			<!-- <input type="text" placeholder="Enter article URL"/> -->
+			<input type="text" placeholder="Enter article URL" id="articleUrl"/>
 			<button id="btn-start">Start</button>	
 		</form>
 	</div>
