@@ -43,11 +43,18 @@
 			return;
 		}
 		var word = text.splice(0,1)[0].trim();
+
+		var delay = 0;
+		if (word.length < 3 || word.length > 8) {
+			delay = 100;
+		}
+
 		while (word.length < 3) {
 			word = " " + word;
 		}
+		
 		render(word.substr(0,2), word[2], word.substr(3));
-		wait(ms).then(function(){iter(text, ms)});
+		wait(ms+delay).done(function(){iter(text, ms)});
 	}
 
 	$(document).ready(function() {	
