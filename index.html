@@ -50,7 +50,7 @@
 
 		$(document).ready(function() {	
 
-			spritzController = new SPRITZ.spritzinc.SpritzerController().attach($("#spritzer"));
+			var spritzController = new SPRITZ.spritzinc.SpritzerController().attach($("#spritzer"));
 
 			var spinner = new Spinner();
 			var $btnStart = $("#btn-start");
@@ -107,10 +107,14 @@
 									.map(normalizeWord);
 
 					$(".word").fadeOut(500, function(){$(this).empty()}).fadeIn(function(){iter()});
+
+					var locale = "en_us;";
+		
+					// Send to SpritzEngine to translate
+					SpritzClient.spritzify(text, locale, function(spritzText){
+						spritzController.startSpritzing(spritzText);
+					}, function(){alert("Error!")});
 					
-					$("#spritzer").data("controller").stopSpritzing();	
-					$("#spritzer").data("controller").startSpritzing(text);
-					// $("#spritzer").data("controller").setSpritzText(text);
 
 	        	}).always(function() { spinner.stop()});
 
