@@ -50,7 +50,8 @@
 
 		$(document).ready(function() {	
 
-			spritzController = new SPRITZ.spritzinc.SpritzerController().attach($("#spritzer"));
+			var spritzController = new SPRITZ.spritzinc.SpritzerController();
+			spritzController.attach($("#spritzer"));
 
 			var spinner = new Spinner();
 			var $btnStart = $("#btn-start");
