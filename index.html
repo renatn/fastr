@@ -106,8 +106,9 @@
 
 					$(".word").fadeOut(500, function(){$(this).empty()}).fadeIn(function(){iter()});
 					
-					// $("#spritzer").data("controller").startSpritzing(text);
-					$("#spritzer").data("controller").setSpritzText(text);
+					$("#spritzer").data("controller").stopSpritzing();	
+					$("#spritzer").data("controller").startSpritzing(text);
+					// $("#spritzer").data("controller").setSpritzText(text);
 
 	        	}).always(function() { spinner.stop()});
 
