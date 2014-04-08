@@ -105,13 +105,12 @@
 									.map(normalizeWord);
 
 					$(".word").fadeOut(500, function(){$(this).empty()}).fadeIn(function(){iter()});
+
+	        		 $("#spritzer").data("controller").startSpritzing(text);
+
 	        	}).always(function() { spinner.stop()});
 
 
-	        	SpritzClient.fetchContents(url, function(spritzText){
-	        		 $("#spritzer").data("controller").startSpritzing(spritzText);
-
-	        	}, function(){alert("Errorr!")}); 
 
 			});
 
