@@ -108,11 +108,11 @@
 	        	}).always(function() { spinner.stop()});
 
 
-	        	spritzClient.fetchContents(url, function(spritzText){
+	        	SpritzClient.fetchContents(url, function(spritzText){
 	        		 $("#spritzer").data("controller").startSpritzing(spritzText);
 
 	        	}, function(){alert("Errorr!")}); 
-	        	
+
 			});
 
 			$btnPause.click(function() {
