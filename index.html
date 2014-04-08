@@ -7,8 +7,6 @@
 		.box {
 			margin: 100px auto 20px auto;
 			width: 450px;
-			border-top: 2px solid black;
-			border-bottom: 2px solid black;
 		}
 		.word {
 			margin-left: 100px;
@@ -26,27 +24,15 @@
 	</style>
 	<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.0/jquery.js"></script>
 	<script src="http://fgnass.github.io/spin.js/spin.min.js"></script>
+		<script type="text/javascript">
+         var SpritzSettings = {
+                  clientId: "5ba714540fabf77dc",
+                  redirectUri: "http://renatn.com/spritx/login_success.html",
+
+   		};
+	</script>
+	<script id="spritzjs" type="text/javascript" src="http://sdk.spritzinc.com/js/1.0/js/spritz.min.js"></script>
 	<script type="text/javascript">
-
-		function render(left, center, right) {
-			var e = left.replace(/\s/g, '&nbsp;') + "<span class='red'>"+center+"</span>"+right;
-			$(".word").html(e);
-		}
-
-		function normalizeWord(word) {
-			word = word.trim();
-			while (word.length < 3) {
-				word = " " + word;
-			} 
-			return word;
-		}
-
-		function wait(ms, pause) {
-			var deferred = $.Deferred();
-			setTimeout(function(){deferred.resolve()}, ms);
-			return deferred.promise();
-		}
-
 
 		$(document).ready(function() {	
 
@@ -54,27 +40,19 @@
 			spritzController.attach($("#spritzer"));
 
 			var spinner = new Spinner();
-			var $btnStart = $("#btn-start");
-			var $btnPause = $("#btn-pause");
-
-			$btnStart.click(function() {
+			$("#btn-start").click(function() {
+				
 				var url = $("#articleUrl").val();
 				if (url.length == 0) {
 					return;
 				}
 				
-				$btnStart.attr("disabled", "disabled");
 
 				var container = document.getElementById("spinContainer");
 				spinner.spin(container);
 
 				$.getJSON("https://www.readability.com/api/content/v1/parser?url="+ url +"&token=74e9c9a322e162f0dee87e8425ce209eeea0643e&callback=?", function (data) {
 					var text = data.title + " " + $('<div />').html(data.content).text();					
-					words = text.split(/[ \n]+/)
-									.filter(function(word){return word.trim().length > 0})
-									.map(normalizeWord);
-
-					$(".word").fadeOut(500, function(){$(this).empty()}).fadeIn(function(){iter()});
 
 					var locale = "en_us;";
 		
@@ -86,43 +64,14 @@
 					});
 					
 
-	        	}).always(function() { spinner.stop()});
-
+	        	}).always(function() {spinner.stop()});
 
 			});
 
-			$btnPause.click(function() {
-				paused = !paused;
-				if (paused) {
-					$(this).text("Continue");
-				} else {
-					$(this).text("Pause");
-					iter();
-				}
-			});	
-
-			$("#btn-faster").click(function() {
-				speed = speed - 25;
-				if (speed < 100) {
-					speed = 100;
-				}
-			});
-
-			$("#btn-slower").click(function() {
-				speed = speed + 25;
-			});
 
 		});
 	</script>
 
-	<script type="text/javascript">
-         var SpritzSettings = {
-                  clientId: "5ba714540fabf77dc",
-                  redirectUri: "http://renatn.com/spritx/login_success.html",
-
-   		};
-	</script>
-	<script id="spritzjs" type="text/javascript" src="http://sdk.spritzinc.com/js/1.0/js/spritz.min.js"></script>
 </head>
 <body>
 
@@ -132,10 +81,7 @@
 	<div style="text-align:center">
 		<form action="javascript:void(0);">
 			<input type="text" placeholder="Enter article URL" id="articleUrl"/>
-			<button id="btn-start">Start</button>	
-			<button id="btn-pause" disabled>Pause</button>	
-			<button id="btn-faster">Faster</button>	
-			<button id="btn-slower">Slower</button>	
+			<button id="btn-start">Read</button>	
 		</form>
 	</div>
 
@@ -150,7 +96,6 @@
 
 	  ga('create', 'UA-29178854-1', 'renatn.com');
 	  ga('send', 'pageview');
-
 	</script>
 
 </body>
