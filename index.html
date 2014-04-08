@@ -113,7 +113,7 @@
 					// Send to SpritzEngine to translate
 					SpritzClient.spritzify(text, locale, function(spritzText){
 						spritzController.startSpritzing(spritzText);
-					}, function(){alert("Error!")});
+					}, function(error){alert(alert("Unable to Spritz: " + error.message);)});
 					
 
 	        	}).always(function() { spinner.stop()});
